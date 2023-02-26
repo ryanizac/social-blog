@@ -4,6 +4,7 @@
   "main": "src/index.js",
   "author": "Ryan Izac <io.ryan@outlook.com>",
   "scripts": {
+    "start": "node dist/index.js",
     "build": "esbuild src/index.ts --bundle --platform=node --packages=external --outfile=dist/index.js",
     "dev": "concurrently \"npm run build -- --watch\" \"nodemon --watch dist/**/* dist/index.js\""
   },
