@@ -1,15 +1,17 @@
 import { createServer } from "./lib";
 
-async function importControllers() {
-  const mod = await import("./controllers");
-  return mod.controllers;
+class App {
+  static async importControllers() {
+    const mod = await import("./controllers");
+    return mod.controllers;
+  }
+
+  static async main() {
+    const server = createServer();
+
+    await server.registerControllersAync(this.importControllers);
+    await server.autostart();
+  }
 }
 
-async function main() {
-  const server = createServer();
-
-  await server.registerControllersAync(importControllers);
-  await server.autostart();
-}
-
-main();
+App.main();
