@@ -1,6 +1,8 @@
+import { Application } from "./lib/application";
 import { createServer } from "./lib";
 
-class App {
+@Application()
+export class App {
   static async importControllers() {
     const mod = await import("./controllers");
     return mod.controllers;
@@ -13,5 +15,3 @@ class App {
     await server.autostart();
   }
 }
-
-App.main();
