@@ -1,12 +1,9 @@
-import express from "express";
+import { createServer } from "./lib";
 
-const PORT = process.env.PORT || 3000;
-const server = express();
+async function main() {
+  const server = createServer();
 
-server.get("/hello", (req, res) => {
-  res.send("hello!");
-});
+  await server.autostart();
+}
 
-server.listen(PORT, () => {
-  console.log(`Server listen on http:localhost:${PORT}`);
-});
+main();
