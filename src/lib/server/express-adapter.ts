@@ -1,5 +1,7 @@
-import express, { Express } from "express";
-import { IController } from "lib/controller";
+import express, { Express, Request, Response } from "express";
+import { IController } from "../controller";
+import { ControllerMetadata } from "../controller/metadata";
+import { Method } from "./common";
 import { ExpressAdapterOptions } from "./express-adapter-options";
 import { ImporterCallback } from "./importer-callback";
 
@@ -22,6 +24,31 @@ export class ExpressAdapter {
     this.controllers.push(...controllers);
   }
 
+  private adaptExpressRequest(handle: (...args: any[]) => any) {
+    return (req: Request, res: Response) => {
+      const data = handle({ req, res });
+
+      if (typeof data === "string") {
+        return res.send(data);
+      }
+
+      res.json(data);
+    };
+  }
+
+  private setRoutesFromControllers() {
+    const server = this.server;
+    const controllers = this.controllers;
+
+    controllers.forEach((Controller) => {
+      const routes = ControllerMetadata.GetRoutes(Controller);
+      routes.forEach((route) => {
+        const method = route.method.toLowerCase() as Lowercase<Method>;
+        server[method](route.path, this.adaptExpressRequest(route.handle));
+      });
+    });
+  }
+
   async listen() {
     const PORT = this.port;
     const server = this.server;
@@ -32,6 +59,7 @@ export class ExpressAdapter {
   }
 
   async autostart() {
+    this.setRoutesFromControllers();
     await this.listen();
   }
 
