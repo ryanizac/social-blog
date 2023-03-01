@@ -1,6 +1,8 @@
 import { IController } from "./controller";
-import { Options } from "./options";
+import { getOptions, Options } from "./options";
 
-export function Controller<C extends IController>(options: Options) {
+export function Controller<C extends IController>(options?: Options) {
+  const finalOptions = getOptions(options);
+
   return (Controller: C) => {};
 }
