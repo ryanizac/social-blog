@@ -1,11 +1,8 @@
 import { IController } from "./controller";
-import { ControllerMetadata } from "./metadata";
-import { getOptions, Options } from "./options";
+import { ControllerMetadata, ControllerOptions } from "./metadata";
 
-export function Controller<C extends IController>(options?: Options) {
-  const finalOptions = getOptions(options);
-
+export function Controller<C extends IController>(options?: ControllerOptions) {
   return (Controller: C) => {
-    ControllerMetadata.Define(Controller);
+    ControllerMetadata.Define(Controller, options);
   };
 }
