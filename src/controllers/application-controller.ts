@@ -7,4 +7,8 @@ export class ApplicationController {
   index() {
     return "Called from home";
   }
+
+  about() {
+    return "About page";
+  }
 }
