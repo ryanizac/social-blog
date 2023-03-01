@@ -3,6 +3,7 @@ import "reflect-metadata";
 import { IController } from "../controller";
 import { ControllerMetadataKeys } from "./metada-keys";
 import { ControllerOptions } from "./options";
+import { ControllerError } from "../error";
 
 const methodsToIgnore = ["constructor"];
 
@@ -99,5 +100,32 @@ export class ControllerMetadata<C extends IController> {
     metadata.defineController();
     metadata.defineBasepath();
     metadata.defineRoutes();
+  }
+
+  private static isController(Controller: any): boolean {
+    if (typeof Controller !== "function") {
+      return false;
+    }
+
+    const ControllerMetadataKey = Reflect.getMetadata(
+      ControllerMetadataKeys.CONTROLLER,
+      Controller
+    );
+    return ControllerMetadataKey === true;
+  }
+
+  private static readRoutes<C extends IController>(Controller: C): Route[] {
+    return Reflect.getMetadata(ControllerMetadataKeys.ROUTES, Controller);
+  }
+
+  static GetRoutes<C extends IController>(Controller: C) {
+    const isController = this.isController(Controller);
+
+    if (!isController) {
+      throw ControllerError.InvalidController(Controller);
+    }
+
+    const routes = this.readRoutes(Controller);
+    return routes;
   }
 }
