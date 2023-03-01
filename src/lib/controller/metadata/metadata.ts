@@ -32,6 +32,14 @@ export class ControllerMetadata<C extends IController> {
     );
   }
 
+  public defineBasepath() {
+    Reflect.defineMetadata(
+      ControllerMetadataKeys.BASEPATH,
+      this.basepath,
+      this.Controller
+    );
+  }
+
   static Define<C extends IController>(
     Controller: C,
     options?: ControllerOptions
@@ -39,5 +47,6 @@ export class ControllerMetadata<C extends IController> {
     const metadata = new ControllerMetadata(Controller, options);
 
     metadata.defineController();
+    metadata.defineBasepath();
   }
 }
