@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import { IController } from "../controller";
+import { ControllerMetadataKeys } from "./metada-keys";
 import { ControllerOptions } from "./options";
 
 export class ControllerMetadata<C extends IController> {
@@ -23,10 +24,20 @@ export class ControllerMetadata<C extends IController> {
     return "/" + Controller.name.replace(/Controller$/, "").toLocaleLowerCase();
   }
 
+  public defineController() {
+    Reflect.defineMetadata(
+      ControllerMetadataKeys.CONTROLLER,
+      true,
+      this.Controller
+    );
+  }
+
   static Define<C extends IController>(
     Controller: C,
     options?: ControllerOptions
   ) {
     const metadata = new ControllerMetadata(Controller, options);
+
+    metadata.defineController();
   }
 }
