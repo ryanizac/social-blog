@@ -1,3 +1,4 @@
+import { Route } from "../../server/common";
 import "reflect-metadata";
 import { IController } from "../controller";
 import { ControllerMetadataKeys } from "./metada-keys";
@@ -73,7 +74,7 @@ export class ControllerMetadata<C extends IController> {
 
   protected defineRoutes() {
     const methodNames = this.getMethods();
-    const routes: any[] = [];
+    const routes: Route[] = [];
 
     methodNames.forEach((methodName) => {
       const finalPath = this.definePath(methodName);
