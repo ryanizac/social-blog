@@ -24,20 +24,17 @@ export class ControllerMetadata<C extends IController> {
     return "/" + Controller.name.replace(/Controller$/, "").toLocaleLowerCase();
   }
 
-  public defineController() {
-    Reflect.defineMetadata(
-      ControllerMetadataKeys.CONTROLLER,
-      true,
-      this.Controller
-    );
+  private defineMetadata(key: keyof typeof ControllerMetadataKeys, value: any) {
+    const metadatakey = ControllerMetadataKeys[key];
+    Reflect.defineMetadata(metadatakey, value, this.Controller);
   }
 
-  public defineBasepath() {
-    Reflect.defineMetadata(
-      ControllerMetadataKeys.BASEPATH,
-      this.basepath,
-      this.Controller
-    );
+  protected defineController() {
+    this.defineMetadata("CONTROLLER", true);
+  }
+
+  protected defineBasepath() {
+    this.defineMetadata("BASEPATH", this.basepath);
   }
 
   static Define<C extends IController>(
