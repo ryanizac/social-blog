@@ -3,6 +3,8 @@ import { IController } from "../controller";
 import { ControllerMetadataKeys } from "./metada-keys";
 import { ControllerOptions } from "./options";
 
+const methodsToIgnore = ["constructor"];
+
 export class ControllerMetadata<C extends IController> {
   private Controller: C;
   private basepath: string;
@@ -37,6 +39,56 @@ export class ControllerMetadata<C extends IController> {
     this.defineMetadata("BASEPATH", this.basepath);
   }
 
+  private getMethods() {
+    const Controller = this.Controller;
+    const allMethodNames = Object.getOwnPropertyNames(Controller.prototype);
+    const validMethodNames = allMethodNames.filter((methodName) => {
+      if (methodsToIgnore.includes(methodName)) {
+        return false;
+      }
+
+      return typeof Controller.prototype[methodName] === "function";
+    });
+    return validMethodNames;
+  }
+
+  private joinPath(...paths: string[]) {
+    return paths
+      .join("/")
+      .replace(/\/{2,}/g, "/")
+      .replace(/(.+)\/$/, "$1");
+  }
+
+  private definePath(methodName: string) {
+    const pathname = methodName === "index" ? "/" : methodName;
+    return this.joinPath(this.basepath, pathname);
+  }
+
+  private createHandle(methodName: string) {
+    return () => {
+      const data = this.Controller.prototype[methodName]();
+      return data;
+    };
+  }
+
+  protected defineRoutes() {
+    const methodNames = this.getMethods();
+    const routes: any[] = [];
+
+    methodNames.forEach((methodName) => {
+      const finalPath = this.definePath(methodName);
+      const handle = this.createHandle(methodName);
+
+      routes.push({
+        path: finalPath,
+        method: "GET",
+        handle,
+      });
+    });
+
+    this.defineMetadata("ROUTES", routes);
+  }
+
   static Define<C extends IController>(
     Controller: C,
     options?: ControllerOptions
@@ -45,5 +97,6 @@ export class ControllerMetadata<C extends IController> {
 
     metadata.defineController();
     metadata.defineBasepath();
+    metadata.defineRoutes();
   }
 }
