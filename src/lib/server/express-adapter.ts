@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import { IController } from "../controller";
 import { ControllerMetadata } from "../controller/metadata";
-import { Method } from "./common";
+import { Method } from "../controller";
 import { ExpressAdapterOptions } from "./express-adapter-options";
 import { ImporterCallback } from "./importer-callback";
 

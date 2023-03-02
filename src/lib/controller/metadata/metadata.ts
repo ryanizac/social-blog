@@ -1,4 +1,4 @@
-import { Route } from "../../server/common";
+import { Route } from "../common";
 import "reflect-metadata";
 import { IController } from "../controller";
 import { ControllerMetadataKeys } from "./metada-keys";
