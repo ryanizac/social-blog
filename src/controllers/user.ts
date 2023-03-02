@@ -1,3 +1,4 @@
+import { CreateUserBody } from "../interfaces/create-user-body";
 import { Controller } from "../lib";
 
 @Controller()
@@ -17,5 +18,11 @@ export class UserController {
       <button type="submit">Create</button>
     </form>
     `;
+  }
+
+  create(body: CreateUserBody) {
+    return {
+      email: body.email,
+    };
   }
 }
