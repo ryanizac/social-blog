@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from "express";
-import { IController } from "../controller";
+import { IController, RequestHandler } from "../controller";
 import { ControllerMetadata } from "../controller/metadata";
 import { Method } from "../controller";
 import { ExpressAdapterOptions } from "./express-adapter-options";
@@ -24,9 +24,13 @@ export class ExpressAdapter {
     this.controllers.push(...controllers);
   }
 
-  private adaptExpressRequest(handle: (...args: any[]) => any) {
+  private adaptExpressRequest(handle: RequestHandler) {
     return (req: Request, res: Response) => {
-      const data = handle({ req, res });
+      const data = handle({
+        body: req.body,
+        params: req.params,
+        headers: req.headers,
+      });
 
       if (typeof data === "string") {
         return res.send(data);

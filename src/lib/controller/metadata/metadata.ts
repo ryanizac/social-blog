@@ -1,4 +1,4 @@
-import { Route } from "../common";
+import { Request, Route } from "../common";
 import "reflect-metadata";
 import { IController } from "../controller";
 import { ControllerMetadataKeys } from "./metada-keys";
@@ -67,7 +67,7 @@ export class ControllerMetadata<C extends IController> {
   }
 
   private createHandle(methodName: string) {
-    return () => {
+    return (request: Request) => {
       const data = this.Controller.prototype[methodName]();
       return data;
     };
