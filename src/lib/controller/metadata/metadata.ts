@@ -41,6 +41,14 @@ export class ControllerMetadata<C extends IController> {
     this.defineMetadata("BASEPATH", this.basepath);
   }
 
+  protected getRequestMethod(methodName: string) {
+    const requestMehod = Reflect.getMetadata(
+      ControllerMetadataKeys.METHOD,
+      this.Controller.prototype[methodName]
+    );
+    return requestMehod || "get";
+  }
+
   private getMethods() {
     const Controller = this.Controller;
     const allMethodNames = Object.getOwnPropertyNames(Controller.prototype);
@@ -80,10 +88,11 @@ export class ControllerMetadata<C extends IController> {
     methodNames.forEach((methodName) => {
       const finalPath = this.definePath(methodName);
       const handle = this.createHandle(methodName);
+      const method = this.getRequestMethod(methodName);
 
       routes.push({
         path: finalPath,
-        method: "GET",
+        method,
         handle,
       });
     });

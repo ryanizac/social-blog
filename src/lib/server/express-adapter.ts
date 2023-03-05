@@ -48,6 +48,8 @@ export class ExpressAdapter {
       const routes = ControllerMetadata.GetRoutes(Controller);
       routes.forEach((route) => {
         const method = route.method.toLowerCase() as Lowercase<Method>;
+        console.log(route.path, route.method);
+
         server[method](route.path, this.adaptExpressRequest(route.handle));
       });
     });

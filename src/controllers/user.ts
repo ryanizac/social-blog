@@ -1,5 +1,5 @@
 import { CreateUserBody } from "../interfaces/create-user-body";
-import { Controller } from "../lib";
+import { Controller, Post } from "../lib";
 
 @Controller()
 export class UserController {
@@ -20,6 +20,7 @@ export class UserController {
     `;
   }
 
+  @Post()
   create(body: CreateUserBody) {
     return {
       email: body.email,
